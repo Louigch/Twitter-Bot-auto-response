@@ -18,6 +18,8 @@ limitSearchs= 180
 listTwittos = ["RebeuDeter","AmineMaTue","PatrickAdemo","Theorus_","Grimkujow_","terracid","Remeli_","TeufeurSoff","RenardA9Queues","LaPvlga","LJVoff","theomcx","Kammeto","EncoreBouly","EcrisioFX","JM_Bigard","Arkunir","petitcon_","_RapVibes","elpaulohermano"]
 listFraude=["finito","masterclass","MIAULE PLEURE HURLE ABOIE CHIALE REPETES SANS BEUGLER","rouspete sans rouspeter","finito + supprime ton compte + sois digne","Réel mais couine sans miauler","gênant culotté pleure chiale chouine couine aboie miaule boude brûle hurle crie","hulule","masterclass + t'es a ton prime","t'es a ton prime akhy","genant + finito","goatesque","goatesque t'es a ton prime akhy","chiale","genant t'es finito","hulule + rouspete","pleure + zinzinule","masterclass mais reste digne akhy","t'es finito akhy","finito à la niche","pleurniche ricane jacasse agonise beugle chuchote murmure ronfle suffoque asphixe"]
 
+list_id_mention=1380819831205851138
+
 def endsWith(sentence,keyword):
     return sentence.endswith(keyword)
 
@@ -45,7 +47,7 @@ def search(research, howMany):
         if(Find(search.text, "finito") or Find(search.text, "masterclass") or Find(search.text, "prime") or Find(search.text, "akhy") or Find(search.text, "pessi") or Find(search.text, "génant") or Find(search.text,"goatesque")):
             postStatus("@" + search.user.screen_name + " " + random.choice(listFraude), search.id, "media.jpg")
             print("")
-            time.sleep(1000)
+            time.sleep(700)
 
 def deleteAllTweets(user):
 	id_list = []
@@ -84,15 +86,17 @@ def citation():
 
 
 
-def startResearch():
+def StartSearchAutoAndAutoRepliMentions():
 	global searchs
 	global tweets
 	global limitTweets
 	global limitSearchs
 	arret = False
 	while(not arret):
+		MentionReplies()
+		print(list_id_mention)
 		try:
-			search("pessi", "100")
+			search("pessi", "50")
 
 		except:
 			print("Erreur de maximum")
@@ -106,7 +110,7 @@ def startResearch():
 
 		print(f"on a fait {str(tweets)} tweets!")
 		time.sleep(10000)
-	startResearch()
+	StartSearchAutoAndAutoRepliMentions()
 
 
 def startCitation():
@@ -133,4 +137,31 @@ def startCitation():
 	print("Citation finis")
 
 
-startResearch()
+def MentionReplies():
+	global list_id_mention
+	global listFraude
+	global tweets
+	list_mention=api.GetMentions()
+	tweets+=1
+
+	for t in list_mention:
+		if t.id > list_id_mention:
+			if t.user.screen_name == "BotFinito":
+				print("C'est mon tweet.")
+			else:
+				postStatus("@" + t.user.screen_name + " " + random.choice(listFraude), t.id, "media.jpg")
+				print(" ")
+				time.sleep(700)
+            
+		else:
+			print("Tweet déjà répondu", t.id,t.text)
+			print("")
+
+	
+	list_id_mention = list_mention[0].id
+
+
+	return list_id_mention
+
+
+StartSearchAutoAndAutoRepliMentions()
