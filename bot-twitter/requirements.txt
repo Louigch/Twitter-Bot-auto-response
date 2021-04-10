@@ -1,0 +1,5 @@
+git+https://github.com/bear/python-twitter
+dnspython==1.16.0
+
+
+python-twitter==3.5
