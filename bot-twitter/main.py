@@ -15,10 +15,10 @@ searchs = 0
 tweets= 0
 limitTweets = 300
 limitSearchs= 180
-listTwittos = ["RebeuDeter","AmineMaTue","PatrickAdemo","Theorus_","Grimkujow_","terracid","Remeli_","TeufeurSoff","RenardA9Queues","LaPvlga","LJVoff","theomcx","Kammeto","EncoreBouly","EcrisioFX","JM_Bigard","Arkunir","petitcon_","_RapVibes","elpaulohermano"]
+
 listFraude=["finito","masterclass","MIAULE PLEURE HURLE ABOIE CHIALE REPETES SANS BEUGLER","rouspete sans rouspeter","finito + supprime ton compte + sois digne","Réel mais couine sans miauler","gênant culotté pleure chiale chouine couine aboie miaule boude brûle hurle crie","hulule","masterclass + t'es a ton prime","t'es a ton prime akhy","genant + finito","goatesque","goatesque t'es a ton prime akhy","chiale","genant t'es finito","hulule + rouspete","pleure + zinzinule","masterclass mais reste digne akhy","t'es finito akhy","finito à la niche","pleurniche ricane jacasse agonise beugle chuchote murmure ronfle suffoque asphixe"]
 
-list_id_mention=1380819831205851138
+list_id_mention=[1383521289906753541,1383518241964793858,1383504417681416195,1383491667009839104,1383490246722002947,1383487872699830279,1383481046910439428,1383478009160556548,1383474198324998144] #blacklist tweets id aready reply
 
 def endsWith(sentence,keyword):
     return sentence.endswith(keyword)
@@ -47,7 +47,7 @@ def search(research, howMany):
         if(Find(search.text, "finito") or Find(search.text, "masterclass") or Find(search.text, "prime") or Find(search.text, "akhy") or Find(search.text, "pessi") or Find(search.text, "génant") or Find(search.text,"goatesque")):
             postStatus("@" + search.user.screen_name + " " + random.choice(listFraude), search.id, "media.jpg")
             print("")
-            time.sleep(700)
+            time.sleep(800)
 
 def deleteAllTweets(user):
 	id_list = []
@@ -67,11 +67,9 @@ def PrivateMessage(user,text):
 
 
 def citation():
-	global listTwittos
-	global listeAuteur
 	id_tweets= []
 	while len(id_tweets) < 50:
-		cible = random.choice(listTwittos)
+		cible = random.choice('Name of a user')
 		timeline = api.GetUserTimeline(screen_name = cible ,count = 100,exclude_replies = True)
 		tweet = random.choice(timeline)
 
@@ -79,8 +77,7 @@ def citation():
 			id_tweets.append(tweet)
 
 	for t in id_tweets:
-		auteur = random.choice(listeAuteur)
-		postStatus("@" + t.user.screen_name + (f"\"{t.text - t.mention - t.expanded_url}.\"") + auteur, t.id)
+		postStatus("@" + t.user.screen_name + (f"\"{t.text - t.mention - t.expanded_url}.\""), t.id)
 		time.sleep(60)
 
 
@@ -91,10 +88,11 @@ def StartSearchAutoAndAutoRepliMentions():
 	global tweets
 	global limitTweets
 	global limitSearchs
+	global list_id_mention
 	arret = False
 	while(not arret):
 		MentionReplies()
-		print(list_id_mention)
+		print("le dernier tweet à repondre est :" ,list_id_mention)
 		try:
 			search("pessi", "50")
 
@@ -142,25 +140,26 @@ def MentionReplies():
 	global listFraude
 	global tweets
 	list_mention=api.GetMentions()
-	tweets+=1
+	
 
 	for t in list_mention:
-		if t.id > list_id_mention:
+		if t.id not in list_id_mention:
 			if t.user.screen_name == "BotFinito":
 				print("C'est mon tweet.")
 			else:
+				tweets+=1
 				postStatus("@" + t.user.screen_name + " " + random.choice(listFraude), t.id, "media.jpg")
 				print(" ")
-				time.sleep(700)
+				list_id_mention.append(t.id)
+				time.sleep(800)
+
+				print(list_id_mention)
             
 		else:
 			print("Tweet déjà répondu", t.id,t.text)
 			print("")
 
-	
-	list_id_mention = list_mention[0].id
-
-
+	print("les tweets déja repondus sont :" ,list_id_mention)
 	return list_id_mention
 
 
